@@ -57,6 +57,9 @@
 									<excludes>
 										<exclude>log4j.properties</exclude>
 										<exclude>server-config.json</exclude>
+										<exclude>META-INF/*.SF</exclude>
+										<exclude>META-INF/*.DSA</exclude>
+										<exclude>META-INF/*.RSA</exclude>
 									</excludes>
 								</filter>
 							</filters>
@@ -221,5 +224,29 @@
 		</dependency>
 		
 	</dependencies>
+	<repositories>
+		<repository>
+		  <id>dev-azure-com-cogdevops-github_feed</id>
+		  <url>https://pkgs.dev.azure.com/cogdevops/_packaging/GitHub_Feed/maven/v1</url>
+		  <releases>
+		    <enabled>true</enabled>
+		  </releases>
+		  <snapshots>
+		    <enabled>true</enabled>
+		  </snapshots>
+		</repository>
+	</repositories>
+	<distributionManagement>
+		<repository>
+		  <id>dev-azure-com-cogdevops-github_feed</id>
+		  <url>https://pkgs.dev.azure.com/cogdevops/_packaging/GitHub_Feed/maven/v1</url>
+		  <releases>
+		    <enabled>true</enabled>
+		  </releases>
+		  <snapshots>
+		    <enabled>true</enabled>
+		  </snapshots>
+		</repository>
+	</distributionManagement>
 	
 </project>
