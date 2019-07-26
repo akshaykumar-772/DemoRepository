@@ -6,6 +6,12 @@
 trigger:
 - master
 
+- task: DownloadSecureFile@1
+  name: settings.xml
+  displayName: 'Download settings.xml'
+  inputs:
+    secureFile: 'settings.xml'
+
 pool:
   vmImage: 'ubuntu-latest'
 
