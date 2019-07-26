@@ -6,12 +6,6 @@
 trigger:
 - master
 
-- task: DownloadSecureFile@1
-  name: settings
-  displayName: 'Download settings.xml'
-  inputs:
-    secureFile: 'settings.xml'
-
 pool:
   vmImage: 'ubuntu-latest'
 
@@ -26,3 +20,9 @@ steps:
     publishJUnitResults: false
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
     goals: 'package'
+
+- task: DownloadSecureFile@1
+  name: settings
+  displayName: 'Download settings.xml'
+  inputs:
+    secureFile: 'settings.xml'
