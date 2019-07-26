@@ -7,7 +7,7 @@ trigger:
 - master
 
 - task: DownloadSecureFile@1
-  name: settings.xml
+  name: settings
   displayName: 'Download settings.xml'
   inputs:
     secureFile: 'settings.xml'
