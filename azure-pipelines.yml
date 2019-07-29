@@ -26,9 +26,3 @@ steps:
   displayName: 'Download settings.xml'
   inputs:
     secureFile: 'settings.xml'
-
-- script: |
-    echo Installing $(settingsFile.secureFilePath) to the trusted ST directory...
-    sudo chown root:root $(settingsFile.secureFilePath)
-    sudo chmod a+r $(settingsFile.secureFilePath)
-    sudo ln -s -t /etc/GitDemo/settings/ $(settingsFile.secureFilePath)
