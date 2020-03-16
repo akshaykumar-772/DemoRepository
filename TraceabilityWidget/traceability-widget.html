@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <script src="node_modules/vss-web-extension-sdk/lib/VSS.SDK.min.js"></script>
+    <script src="node_modules/angular.min.js"></script>
+    <script src="node_modules/jquery.min.js"></script>
+    <script src="node_modules/bootstrap.min.js"></script>
+    <script src="traceability-widget.js"></script>
+    <script src="traceability-service.js"></script>
+    <link rel="stylesheet" href="node_modules/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+	<div ng-app="traceabilityApp" ng-controller="traceabilityController" class="widget">
+        <h2 style="margin-left: 10px;">Traceability View</h2>
+        <br>
+        <div class="row" style="margin-right: 0px !important;">
+            <div class="col-md-3">
+                <select class="inputSettings" name="azureTools" ng-model="toolIndex" ng-change="reset(); fieldValue=''">
+                    <option value="" disabled selected hidden>Select Tool</option>
+                    <option ng-repeat="tool in toolsList track by $index" value="{{$index}}">
+                        {{tool.toolName}}
+                    </option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select class="inputSettings" ng-model="fieldName" class="padding-5" ng-change="reset(); fieldValue=''">
+                    <option value="" disabled selected hidden>Select Field</option>
+                    <option ng-repeat="field in toolsList[toolIndex].fields track by $index" value="{{field}}">
+                        {{field}}
+                    </option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <input class="inputSettings width-95" type="text" ng-model="fieldValue" placeholder="{{fieldName}} value" class="padding-5">
+            </div>
+            <div class="col-md-2"> 
+                <input type="button" name="submit" ng-click="findTraceability()" ng-model="submitButton" value="Submit" class="submitButton"
+                        ng-disabled="!fieldValue && !fieldName">
+            </div>
+        </div>
+        <br><br>
+        <div ng-if="isDataAvailable == 'A'">
+            <div class="row" style="margin-left: 40px; font-size: 13px;">
+                <div class="col-md-2">
+                    <img src="img/board.png" alt="Stories" width="80" height="80" ng-click="changeView(1)"><br>
+                    {{finalWorkItemCount}} Work Item
+                </div>
+                <div class="col-md-2">
+                    <img src="img/repo.png" alt="Commits" width="80" height="80" ng-click="changeView(2)"><br>
+                    {{finalCommitCount}} Commits
+                </div>
+                <div class="col-md-2">
+                    <img src="img/build.png" alt="Builds" width="80" height="80" ng-click="changeView(3)"><br>
+                    {{finalBuildCount}} CI Jobs
+                </div>
+                <div class="col-md-2">
+                    <img src="img/pipeline.png" alt="Releases" width="80" height="80" ng-click="changeView(4)"><br>
+                    {{finalReleaseCount}} Releases
+                </div>
+                <div class="col-md-2">
+                    <img src="img/tests.png" alt="Test" width="80" height="80"><br>
+                    {{finalTestCount}} Test Executions
+                </div>
+                <div class="col-md-2">
+                    <img src="img/artifacts.png" alt="Artifacts" width="80" height="80"><br>
+                    {{finalArtifactCount}} Artifacts
+                </div>
+            </div>
+            <div style="text-align: center;font-size: 15px;margin-top: 50px;">
+                Search for <b>{{fieldName}} - {{fieldValue}}</b> has fetched <b>{{finalWorkItemCount}} Work Item,
+                {{finalCommitCount}} Commits, {{finalBuildCount}} CI Jobs, {{finalReleaseCount}} Releases, {{finalTestCount}} Test Executions,
+                {{finalArtifactCount}} Artifacts</b>
+            </div>
+            <br><br>
+            <div class="row">
+                <p class="advView" ng-show="!isOverall" ng-click="changeView(0)">Advanced View</p>
+            </div>
+            <div ng-show="isOverall" class="text-center">
+                <table>
+                    <tr>
+                        <th></th>
+                        <th><b>First</b></th>
+                        <th><b>Last</b></th>
+                    </tr>
+                    <tr>
+                        <td>Azure Boards(WorkItem)</td>
+                        <td>{{finalWorkItemData[finalWorkItemCount-1].fields["System.ChangedDate"]}}</td>
+                        <td>{{finalWorkItemData[0].fields["System.ChangedDate"]}}</td>
+                    </tr>
+                    <tr>
+                        <td>Azure Repos(Commits)</td>
+                        <td>{{finalCommitData[finalCommitCount-1].committer.date}}</td>
+                        <td>{{finalCommitData[0].committer.date}}</td>
+                    </tr>
+                    <tr>
+                        <td>Azure Builds(CI Jobs)</td>
+                        <td>{{finalBuildData[finalBuildCount-1].finishTime}}</td>
+                        <td>{{finalBuildData[0].finishTime}}</td>
+                    </tr>
+                    <tr>
+                        <td>Azure Releases</td>
+                        <td>{{finalReleaseData[finalReleaseCount-1].modifiedOn}}</td>
+                        <td>{{finalReleaseData[0].modifiedOn}}</td>
+                    </tr>
+                    <tr>
+                        <td>Azure Tests(Executions)</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Azure Artifacts(Artifacts)</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+            <div ng-show="isWorkItem" class="text-center">
+                <table>
+                    <tr>
+                        <th><b>Sr.No.</b></th>
+                        <th><b>Key</b></th>
+                        <th><b>Project Name</b></th>
+                        <th><b>WorkItem Type</b></th>
+                        <th><b>Priority</b></th>
+                        <th><b>Status</b></th>
+                        <th><b>Update Date</b></th>
+                    </tr>
+                    <tr ng-repeat="workItem in finalWorkItemData track by $index">
+                        <td>{{$index + 1}}</td>
+                        <td>{{workItem.id}}</td>
+                        <td>{{workItem.fields["System.TeamProject"]}}</td>
+                        <td>{{workItem.fields["System.WorkItemType"]}}</td>
+                        <td>{{workItem.fields["Microsoft.VSTS.Common.Priority"]}}</td>
+                        <td>{{workItem.fields["System.State"]}}</td>
+                        <td>{{workItem.fields["System.ChangedDate"]}}</td>
+                    </tr>
+                </table>
+            </div>
+            <div ng-show="isCommit" class="text-center">
+                <table>
+                    <tr>
+                        <th><b>Sr.No.</b></th>
+                        <th><b>WorkItem Id</b></th>
+                        <th><b>Commit Id</b></th>
+                        <th><b>Repository</b></th>
+                        <th><b>Author Name</b></th>
+                        <th><b>Author Email</b></th>
+                        <th><b>Commit Time</b></th>
+                    </tr>
+                    <tr ng-repeat="commit in finalCommitData track by $index">
+                        <td>{{$index + 1}}</td>
+                        <td>{{fieldValue}}</td>
+                        <td>{{commit.commitId}}</td>
+                        <td>{{commit.repositoryName}}</td>
+                        <td>{{commit.author.name}}</td>
+                        <td>{{commit.author.email}}</td>
+                        <td>{{commit.author.date}}</td>
+                    </tr>
+                </table>
+            </div>
+            <div ng-show="isBuild" class="text-center">
+                <table>
+                    <tr>
+                        <th><b>Sr.No.</b></th>
+                        <th><b>Build No.</b></th>
+                        <th><b>Commit Id</b></th>
+                        <th><b>Project Name</b></th>
+                        <th><b>Result</b></th>
+                        <th><b>Build Time</b></th>
+                    </tr>
+                    <tr ng-repeat="build in finalBuildData track by $index">
+                        <td>{{$index + 1}}</td>
+                        <td>{{build.id}}</td>
+                        <td>{{build.sourceVersion}}</td>
+                        <td>{{build.repository.name}}</td>
+                        <td>{{build.result}}</td>
+                        <td>{{build.finishTime}}</td>
+                    </tr>
+                </table>
+            </div>
+            <div ng-show="isRelease" class="text-center">
+                <table>
+                    <tr>
+                        <th><b>Sr.No.</b></th>
+                        <th><b>Release Id</b></th>
+                        <th><b>Name</b></th>
+                        <th><b>Build Id</b></th>
+                        <th><b>Release Definition Name</b></th>
+                        <th><b>Update Date</b></th>
+                    </tr>
+                    <tr ng-repeat="rel in finalReleaseData track by $index">
+                        <td>{{$index + 1}}</td>
+                        <td>{{rel.id}}</td>
+                        <td>{{rel.name}}</td>
+                        <td>{{rel.buildId}}</td>
+                        <td>{{rel.releaseDefinition.name}}</td>
+                        <td>{{rel.modifiedOn}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="row" ng-if="isDataAvailable == 'NA'">
+            <p class="noResult"><b>No Result Found</b></p>
+        </div>
+    </div>
+</body>
+
+</html>

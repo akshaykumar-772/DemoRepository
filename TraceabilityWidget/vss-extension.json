@@ -1,0 +1,96 @@
+{
+	"manifestVersion": 1,
+	"id": "Traceability-View",
+	"version": "2.0.7",
+	"name": "Traceabity View",
+	"description": "Displays end-to-end traceability view of the pipeline in azure devops",
+	"publisher": "AkshayKumar",
+	"categories": [
+		"Azure Pipelines"
+	],
+	"targets": [
+		{
+			"id": "Microsoft.VisualStudio.Services"
+		}
+	],
+	"icons": {
+		"default": "img/cognizant.jpg"
+	},
+	"links": {
+		"getstarted": {
+			"uri": "https://dev.azure.com/218316/CITS-Insights%20POC/_wiki/wikis/CITS-Insights-POC.wiki/1/Traceability-View-Widget"
+		},
+		"support": {
+			"uri": "https://onedevops.atlassian.net/wiki/spaces/OI/pages/556826842/Contact+Us"
+		}
+	},
+	"repository": {
+		"type": "git",
+		"uri": "https://dev.azure.com/218316/CITS-Insights%20POC/_git/TraceabilityWidget"
+	},
+	"scopes": [
+		"vso.work",
+		"vso.code",
+		"vso.build",
+		"vso.release"
+	],
+	"contributions": [
+		{
+			"id": "TraceabilityView",
+			"type": "ms.vss-dashboards-web.widget",
+			"targets": [
+				"ms.vss-dashboards-web.widget-catalog"
+			],
+			"properties": {
+				"name": "Traceability View",
+				"description": "Displays end-to-end traceability view of the pipeline in azure devops",
+				"catalogIconUrl": "img/cognizant.jpg",
+				"previewImageUrl": "img/cognizant.jpg",
+				"uri": "traceability-widget.html",
+				"supportedSizes": [
+					{
+						"rowSpan": 4,
+						"columnSpan": 6
+					},
+					{
+						"rowSpan": 5,
+						"columnSpan": 8
+					},
+					{
+						"rowSpan": 5,
+						"columnSpan": 9
+					}
+				],
+				"supportedScopes": [
+					"project_team"
+				]
+			}
+		}
+	],
+	"files": [
+		{
+			"path": "traceability-widget.html",
+			"addressable": true
+		},
+		{
+			"path": "traceability-widget.js",
+			"addressable": true
+		},
+		{
+			"path": "traceability-service.js",
+			"addressable": true
+		},
+		{
+			"path": "styles.css",
+			"addressable": true
+		},
+		{
+			"path": "img",
+			"addressable": true
+		},
+		{
+			"path": "node_modules",
+			"addressable": true
+		}
+	]
+}

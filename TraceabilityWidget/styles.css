@@ -1,0 +1,42 @@
+.widget {
+    overflow-y: auto !important;
+}
+table {
+	border-collapse: collapse;
+	width: 100% !important;
+	background-color: lavender !important;
+	
+}
+td, th {
+	border: 1px solid;
+	text-align: left;
+	padding: 5px !important;
+	font-size: 14px !important;
+}
+.inputSettings {
+	width: 90%;
+	margin-left: 20px;
+	padding: 5px;
+	font-size: small;
+	background-color: lightgray;
+}
+.width-95 {
+	width: 90% !important;
+}
+.submitButton {
+	padding: 5px 15px 5px 15px;
+	background-color: #00728f !important;
+	color: white;
+}
+.text-center {
+	text-align: center;
+}
+img {
+	cursor: pointer;
+}
+.advView {
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+}
